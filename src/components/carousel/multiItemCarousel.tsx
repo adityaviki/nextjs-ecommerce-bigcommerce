@@ -67,7 +67,7 @@ const MultiItemCarousel = ({ children }: { children: ReactNode }) => {
       </div>
       {leftScroll && (
         <div
-          className="absolute top-1/2 md:-left-8 w-8 h-8 cursor-pointer active:bg-blue-500"
+          className="absolute top-1/2 left-0 md:-left-8 w-8 h-8 cursor-pointer active:bg-blue-500"
           onClick={scrollLeft}
         >
           {leftArrowIcon}
@@ -75,7 +75,7 @@ const MultiItemCarousel = ({ children }: { children: ReactNode }) => {
       )}
       {rightScroll && (
         <div
-          className="w-8 h-8 absolute top-1/2 md:-right-8 cursor-pointer flex items-center justify-center active:bg-blue-500"
+          className="w-8 h-8 absolute right-0 top-1/2 md:-right-8 cursor-pointer flex items-center justify-center active:bg-blue-500"
           onClick={scrollRight}
         >
           {rightArrowIcon}

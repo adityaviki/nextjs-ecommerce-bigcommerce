@@ -2,7 +2,7 @@
 
 import type { CustomFlowbiteTheme } from "flowbite-react";
 import { Carousel } from "flowbite-react";
-import { leftArrowIcon, rightArrowIcon } from "./icons";
+import { leftArrowIcon, rightArrowIcon } from "../icons";
 
 export function controlBase(icon: React.ReactNode) {
   return (
@@ -18,14 +18,16 @@ export function controlBase(icon: React.ReactNode) {
 const LeftControl = controlBase(leftArrowIcon);
 const RightControl = controlBase(rightArrowIcon);
 
-export default function CarouselWrapper({
+export default function SingleItemCarousel({
   children,
+  slide = true,
 }: {
   children: React.ReactNode;
+  slide?: boolean;
 }) {
   const customTheme: CustomFlowbiteTheme["carousel"] = {
     root: {
-      base: "relative h-full w-full",
+      base: "relative h-full w-full mb-12",
       leftControl:
         "absolute top-0 left-0 md:-left-8 flex h-full items-center justify-center focus:outline-none",
       rightControl:
@@ -37,7 +39,7 @@ export default function CarouselWrapper({
         on: "bg-[#003459] dark:bg-gray-800",
       },
       base: "h-2 w-2 rounded-full border border-[#003459]",
-      wrapper: "absolute gap-4 bottom-4 flex w-full justify-center",
+      wrapper: "absolute gap-4 -bottom-6 flex w-full justify-center",
     },
     item: {
       base: "absolute top-1/2 left-1/2 block w-full -translate-x-1/2 -translate-y-1/2",
@@ -55,6 +57,7 @@ export default function CarouselWrapper({
 
   return (
     <Carousel
+      slide={slide}
       leftControl={LeftControl}
       rightControl={RightControl}
       theme={customTheme}

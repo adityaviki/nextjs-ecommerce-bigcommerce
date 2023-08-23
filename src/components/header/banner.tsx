@@ -1,9 +1,10 @@
+"use client";
+
 import { useBanners } from "@/lib/hooks";
 import { usePathname } from "next/navigation";
-import { BannerType } from "@/types";
 
 const Banner = () => {
-  const pathname = usePathname();
+  const pathname: string = usePathname();
 
   const { data, error } = useBanners(pathname);
 

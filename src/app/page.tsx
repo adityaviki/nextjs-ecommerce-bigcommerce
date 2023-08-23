@@ -1,7 +1,8 @@
 import Image from "next/image";
-import CarouselWrapper from "@/components/carouselWrapper";
+import SingleItemCarousel from "@/components/carousel/singleItemCarousel";
 import MultiItemCarousel from "@/components/carousel/multiItemCarousel";
-import { getNewArriavls, getMenWomenCategory } from "@/lib/bigCommerce";
+import { getNewProducts, getMenWomenCategory } from "@/lib/bigCommerce";
+import ProductVariants from "@/components/home/productVariant";
 
 const PromotionalCarrousel = () => {
   const dummyData: any = [
@@ -23,7 +24,7 @@ const PromotionalCarrousel = () => {
   ];
 
   return (
-    <CarouselWrapper>
+    <SingleItemCarousel>
       {dummyData.map((slide: any, index: any) => {
         return (
           <div key={index} className={`w-full relative h-[400px] md:h-[460px]`}>
@@ -45,7 +46,7 @@ const PromotionalCarrousel = () => {
           </div>
         );
       })}
-    </CarouselWrapper>
+    </SingleItemCarousel>
   );
 };
 
@@ -69,36 +70,56 @@ const Categories = ({ menWomenCategory }: any) => {
   );
 };
 
-const NewArrivals = ({ newArrivals }: any) => {
-  if (!newArrivals || !newArrivals.length) return null;
+const NewProducts = ({ newProducts }: any) => {
+  if (!newProducts || !newProducts.length) return null;
+
+  const ProductCard = ({ item }: any) => {
+    return (
+      <div className="w-[308px]">
+        <ProductVariants item={item} />
+        <div className="flex justify-between">
+          <div className="text-[#202020] text-base">{item.brand || ""}</div>
+          <div className="text-[#003459] font-bold text-base">
+            {item.price || ""}
+          </div>
+        </div>
+        <div className="text-[#202020] font-bold text-base">
+          {item.name || ""}
+        </div>
+      </div>
+    );
+  };
 
   return (
     <div className="mt-12">
       <div className="text-center text-[32px] mb-4 font-bold">New Arrivals</div>
-      <MultiItemCarousel>
-        {newArrivals.map((item: any, index: any) => (
-          <div key={index} className="basis-auto shrink-0 grow-0 bg-gray-200">
-            <img
-              className="w-[308px] h-[308px]"
-              src={item.images.url_standard}
-              alt={item.name}
-            />
-          </div>
-        ))}
-      </MultiItemCarousel>
+      <div className="hidden md:block">
+        <MultiItemCarousel>
+          {newProducts.map((item: any, index: any) => {
+            return <ProductCard key={index} item={item} />;
+          })}
+        </MultiItemCarousel>
+      </div>
+      <div className="md:hidden">
+        <SingleItemCarousel slide={false}>
+          {newProducts.map((item: any, index: any) => {
+            return <ProductCard key={index} item={item} />;
+          })}
+        </SingleItemCarousel>
+      </div>
     </div>
   );
 };
 
 export default async function Home() {
   const menWomenCategory: any = await getMenWomenCategory();
-  const newArrivals: any = await getNewArriavls();
+  const newProducts: any = await getNewProducts();
 
   return (
     <div>
       <PromotionalCarrousel />
       <Categories menWomenCategory={menWomenCategory} />
-      {/* <NewArrivals newArrivals={newArrivals} /> */}
+      <NewProducts newProducts={newProducts} />
     </div>
   );
 }

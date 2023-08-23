@@ -3,7 +3,7 @@
 import Cart from "./cart";
 import Search from "./search";
 import Menu from "./menu";
-import Flag from "./flag";
+import ShippingLocation from "./shippingLocation";
 import Banner from "./banner";
 import ConfidenceBanner from "./confidenceBanner";
 
@@ -24,7 +24,7 @@ const Header = () => {
             <rect width="107.429" height="36" fill="#C4C4C4" />
           </svg>
 
-          <Flag />
+          <ShippingLocation />
         </div>
         <div className="flex items-center gap-6">
           <Search />
