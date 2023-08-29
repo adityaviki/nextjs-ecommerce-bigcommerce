@@ -21,13 +21,15 @@ const RightControl = controlBase(rightArrowIcon);
 export default function SingleItemCarousel({
   children,
   slide = true,
+  indicatorInside = false,
 }: {
   children: React.ReactNode;
   slide?: boolean;
+  indicatorInside?: boolean;
 }) {
-  const customTheme: CustomFlowbiteTheme["carousel"] = {
+  const customCarouselTheme: CustomFlowbiteTheme["carousel"] = {
     root: {
-      base: "relative h-full w-full mb-12",
+      base: `relative h-full w-full ${indicatorInside ? "" : "mb-10"}`,
       leftControl:
         "absolute top-0 left-0 md:-left-8 flex h-full items-center justify-center focus:outline-none",
       rightControl:
@@ -39,7 +41,9 @@ export default function SingleItemCarousel({
         on: "bg-[#003459] dark:bg-gray-800",
       },
       base: "h-2 w-2 rounded-full border border-[#003459]",
-      wrapper: "absolute gap-4 -bottom-6 flex w-full justify-center",
+      wrapper: `absolute gap-4 flex w-full justify-center ${
+        indicatorInside ? "bottom-4" : "-bottom-5"
+      }`,
     },
     item: {
       base: "absolute top-1/2 left-1/2 block w-full -translate-x-1/2 -translate-y-1/2",
@@ -60,7 +64,7 @@ export default function SingleItemCarousel({
       slide={slide}
       leftControl={LeftControl}
       rightControl={RightControl}
-      theme={customTheme}
+      theme={customCarouselTheme}
     >
       {children}
     </Carousel>

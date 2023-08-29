@@ -14,3 +14,5 @@ export const searchIcon = (
     />
   </svg>
 );
+
+export default searchIcon;

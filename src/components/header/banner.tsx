@@ -1,16 +1,44 @@
 "use client";
 
-import { useBanners } from "@/lib/hooks";
 import { usePathname } from "next/navigation";
+import { useEffect, useState } from "react";
 
 const Banner = () => {
   const pathname: string = usePathname();
+  const [data, setData] = useState([]);
 
-  const { data, error } = useBanners(pathname);
+  useEffect(() => {
+    const firstPart = pathname.split("/")[1];
+    const secondPart = pathname.split("/")[2];
 
-  return data && data.length > 0 ? (
-    <div className="flex flex-col">
-      {data.map((banner: BannerType) => {
+    let query = "";
+
+    if (firstPart === "") {
+      query = `page=home_page`;
+    } else if (firstPart === "category" && secondPart) {
+      query = `page=category_page&category=${secondPart}`;
+    } else if (firstPart === "brand") {
+      query = `page=brand_page&brand=${secondPart}`;
+    } else if (firstPart === "search") {
+      query = `page=search_page`;
+    }
+
+    if (query) {
+      fetch(`/api/banners?${query}`)
+        .then((res) => res.json())
+        .then((data) => {
+          setData(data);
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    }
+  }, [pathname]);
+
+  return (
+    data.length && (
+      <div className="flex flex-col">
+        {/* {data.map((banner: BannerType) => {
         return (
           <div
             key={banner.id}
@@ -18,9 +46,10 @@ const Banner = () => {
             dangerouslySetInnerHTML={{ __html: banner.content }}
           />
         );
-      })}
-    </div>
-  ) : null;
+      })} */}
+      </div>
+    )
+  );
 };
 
 export default Banner;

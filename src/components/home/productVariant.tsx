@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
+import Image from "next/image";
 
 const ProductVariants = ({ item }: any) => {
   const [image, setImage] = useState(item.images.length ? item.images[0] : "");
@@ -9,7 +10,9 @@ const ProductVariants = ({ item }: any) => {
     <div>
       <div className="w-full h-[308px]">
         {image ? (
-          <img
+          <Image
+            width={308}
+            height={308}
             className="w-full h-full object-cover"
             src={image.url_standard}
             alt={item.name}

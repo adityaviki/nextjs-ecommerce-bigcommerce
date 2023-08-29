@@ -36,51 +36,35 @@ const MultiItemCarousel = ({ children }: { children: ReactNode }) => {
     }
   }, []);
 
-  useEffect(() => {
-    const container = scrollContainerRef.current;
-
-    container.addEventListener("scroll", () => {
-      setLeftScroll(container.scrollLeft > 0);
-      setRightScroll(
-        container.scrollLeft + container.clientWidth < container.scrollWidth
-      );
-    });
-
-    return () => {
-      container.removeEventListener("scroll", () => {});
-    };
-  }, []);
-
   return (
     <div className="relative">
-      <div
-        className={`w-full h-[${childrenHeight}px] overflow-hidden relative`}
-      >
+      <div className={`w-full h-[415px] overflow-hidden relative`}>
         <div
-          className={`flex gap-4 h-[${
-            childrenHeight + 17
-          }px] overflow-y-hidden overflow-x-scroll`}
+          className={`flex gap-4 h-[435px] overflow-y-hidden overflow-x-scroll`}
           ref={scrollContainerRef}
         >
           {children}
         </div>
       </div>
-      {leftScroll && (
-        <div
-          className="absolute top-1/2 left-0 md:-left-8 w-8 h-8 cursor-pointer active:bg-blue-500"
-          onClick={scrollLeft}
-        >
+      <div
+        className="w-8 h-8 absolute top-[154px] left-0 md:-left-8 cursor-pointer active:bg-blue-500"
+        onClick={() => scrollLeft()}
+      >
+        <div className="absolute w-8 h-8 bg-white opacity-50" />
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
           {leftArrowIcon}
         </div>
-      )}
-      {rightScroll && (
-        <div
-          className="w-8 h-8 absolute right-0 top-1/2 md:-right-8 cursor-pointer flex items-center justify-center active:bg-blue-500"
-          onClick={scrollRight}
-        >
+      </div>
+
+      <div
+        className="w-8 h-8 absolute right-0 top-[154px] md:-right-8 cursor-pointer active:bg-blue-500"
+        onClick={() => scrollRight()}
+      >
+        <div className="absolute w-8 h-8 bg-white opacity-50" />
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
           {rightArrowIcon}
         </div>
-      )}
+      </div>
     </div>
   );
 };
