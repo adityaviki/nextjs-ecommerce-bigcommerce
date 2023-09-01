@@ -216,7 +216,7 @@ const MenuSmall = ({ menuItems }: { menuItems: MenuItems }) => {
         )}
       </div>
       <div
-        className={`fixed overflow-auto bg-white w-full h-full left-0 top-[84px] ${
+        className={`fixed overflow-auto bg-white w-full h-full pb-[84px] left-0 top-[84px] ${
           menuOpen ? "block" : "hidden"
         }`}
       >

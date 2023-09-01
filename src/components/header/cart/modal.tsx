@@ -3,7 +3,7 @@
 import { BigCommerceCart, Currency } from "@/lib/types";
 import Image from "next/image";
 import { useState, useEffect, useRef } from "react";
-import { cartIcon } from "@/components/icons";
+import { cartIcon, closeIcon } from "@/components/icons";
 import CartItemQuantity from "./cartItemQuantity";
 import RemoveCartItem from "./removeCartItem";
 import getSymbolFromCurrency from "currency-symbol-map";
@@ -12,8 +12,10 @@ import { useContext } from "react";
 
 const CartModal = ({ cart }: { cart: BigCommerceCart | undefined }) => {
   const containerRef = useRef<HTMLDivElement | null>(null);
+  const [showCartSmall, setShowCartSmall] = useState(false);
   const [showCart, setShowCart] = useState(false);
   const { activeCurrency } = useContext(GlobalContext);
+
   const toggleCart = () => {
     setShowCart((prev) => !prev);
   };
@@ -34,32 +36,9 @@ const CartModal = ({ cart }: { cart: BigCommerceCart | undefined }) => {
     };
   }, []);
 
-  return (
-    <div ref={containerRef} className="relative">
-      <div
-        onClick={() => {
-          toggleCart();
-        }}
-        className="hidden md:flex cursor-pointer gap-2 items-center justify-center"
-      >
-        <div>{cartIcon}</div>
-        {cart && (
-          <div className="font-bold">{cart?.lineItems.totalQuantity}</div>
-        )}
-      </div>
-      <div className="flex md:hidden gap-2 items-center justify-center">
-        <div>{cartIcon}</div>
-        {cart && (
-          <div className="font-bold">{cart?.lineItems.totalQuantity}</div>
-        )}
-      </div>
-      <div
-        className="absolute w-[375px] min-h-[400px] z-20 overflow-auto max-h-[600px] border md:-right-[24px] lg:-right-[72px] bg-white top-[42px]"
-        style={{
-          display: showCart ? "block" : "none",
-          boxShadow: "rgba(0, 0, 0, 0.4) 0px 30px 90px",
-        }}
-      >
+  const CartItems = () => {
+    return (
+      <div className="w-full">
         <div className="m-4 font-medium text-xl">{`Your Cart (${
           cart?.lineItems.totalQuantity || "0"
         } Items)`}</div>
@@ -145,11 +124,76 @@ const CartModal = ({ cart }: { cart: BigCommerceCart | undefined }) => {
           </div>
         )}
       </div>
-      <div
-        className="absolute top-[28px] z-20 right-0 w-0 h-0 border-l-[12px] border-l-transparent border-b-[20px] border-b-white border-r-[12px] border-r-transparent"
-        style={{ display: showCart ? "block" : "none" }}
-      ></div>
-    </div>
+    );
+  };
+
+  const CartLarge = () => {
+    return (
+      <div ref={containerRef} className="relative">
+        <div
+          onClick={() => {
+            toggleCart();
+          }}
+          className="hidden md:flex cursor-pointer gap-2 items-center justify-center"
+        >
+          <div>{cartIcon}</div>
+          {cart && (
+            <div className="font-bold">{cart?.lineItems.totalQuantity}</div>
+          )}
+        </div>
+        <div
+          className="absolute w-[375px] min-h-[400px] z-20 overflow-auto max-h-[600px] border md:-right-[24px] lg:-right-[72px] bg-white top-[42px]"
+          style={{
+            display: showCart ? "block" : "none",
+            boxShadow: "rgba(0, 0, 0, 0.4) 0px 30px 90px",
+          }}
+        >
+          <CartItems />
+        </div>
+        <div
+          className="absolute top-[28px] z-20 right-0 w-0 h-0 border-l-[12px] border-l-transparent border-b-[20px] border-b-white border-r-[12px] border-r-transparent"
+          style={{ display: showCart ? "block" : "none" }}
+        ></div>
+      </div>
+    );
+  };
+
+  const CartSmall = () => {
+    return (
+      <div className="relative">
+        <div
+          onClick={() => setShowCartSmall((prev) => !prev)}
+          className="flex md:hidden gap-2 cursor-pointer items-center justify-center"
+        >
+          <div>{showCartSmall ? closeIcon : cartIcon}</div>
+          {cart && (
+            <div
+              style={{ display: showCartSmall ? "none" : "block" }}
+              className="font-bold"
+            >
+              {cart?.lineItems.totalQuantity}
+            </div>
+          )}
+        </div>
+        <div
+          className="fixed md:hidden overflow-y-auto pb-[84px] top-[84px] left-0 w-screen h-full bg-white"
+          style={{ display: showCartSmall ? "block" : "none" }}
+        >
+          <CartItems />
+        </div>
+      </div>
+    );
+  };
+
+  return (
+    <>
+      <div className="hidden md:block">
+        <CartLarge />
+      </div>
+      <div className="md:hidden">
+        <CartSmall />
+      </div>
+    </>
   );
 };
 
