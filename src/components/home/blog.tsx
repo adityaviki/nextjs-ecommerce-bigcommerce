@@ -25,9 +25,9 @@ const Blog = async () => {
               </div>
               <div className="font-bold">{blog.name}</div>
 
-              <Link href="..." className="text-[16px] underline text-[#202020]">
+              <div className="text-[16px] underline text-[#202020]">
                 Read More
-              </Link>
+              </div>
             </div>
           );
         })}

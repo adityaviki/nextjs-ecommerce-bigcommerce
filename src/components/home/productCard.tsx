@@ -1,12 +1,20 @@
 "use client";
 
-import { Product } from "@/lib/types";
+import { CartItem, Currency, Product } from "@/lib/types";
+
 import Image from "next/image";
-import { useState } from "react";
+import { useState, useTransition, useContext } from "react";
+import { addItem } from "@/lib/actions/cart";
+import { GlobalContext } from "@/context/globalProviderModal";
+import { useRouter } from "next/navigation";
+import getSymbolFromCurrency from "currency-symbol-map";
 
 const ProductCard = ({ product }: { product: Product }) => {
+  const { setNotify, activeCurrency } = useContext(GlobalContext);
+  const [isPending, startTransition] = useTransition();
   const defaultImage = product.images?.edges[0]?.node?.urlOriginal;
   const alternateImage = product.images?.edges[1]?.node?.urlOriginal;
+  const router = useRouter();
 
   const sizeOptions = product.productOptions?.edges.find(
     (edge) => edge?.node?.displayName?.toLocaleLowerCase() === "size"
@@ -65,6 +73,74 @@ const ProductCard = ({ product }: { product: Product }) => {
 
   const handleMouseLeave = () => {
     setIsHovered(false);
+  };
+
+  const handleAddItem = () => {
+    startTransition(async () => {
+      if (!selectedSizeValueId) {
+        setNotify({ message: "Please select a size" });
+        return;
+      }
+
+      const variant = product.variants?.edges.find((variant) => {
+        const colorOption = variant?.node?.options?.edges.find(
+          (edge) => edge?.node?.entityId === colorOptions?.node?.entityId
+        );
+
+        const sizeOption = variant?.node?.options?.edges.find(
+          (edge) => edge?.node?.entityId === sizeOptions?.node?.entityId
+        );
+
+        if (
+          colorOption?.node?.values.edges[0]?.node.entityId ===
+            selectedColorValueId &&
+          sizeOption?.node?.values.edges[0]?.node.entityId ===
+            selectedSizeValueId &&
+          variant?.node?.isPurchasable
+        ) {
+          return true;
+        }
+      });
+
+      if (!variant) {
+        setNotify({ message: "This variant is not available" });
+        return;
+      }
+
+      if (!colorOptions || !sizeOptions || !selectedColorValueId) {
+        setNotify({ message: "Something went wrong. Please try again later." });
+        return;
+      }
+
+      const data: CartItem = {
+        quantity: 1,
+        productEntityId: product.entityId,
+        variantEntityId: variant?.node?.entityId,
+        selectedOptions: {
+          multipleChoices: [
+            {
+              optionEntityId: colorOptions?.node?.entityId,
+              optionValueEntityId: selectedColorValueId,
+            },
+            {
+              optionEntityId: sizeOptions?.node?.entityId,
+              optionValueEntityId: selectedSizeValueId,
+            },
+          ],
+        },
+      };
+
+      const response = await addItem(data);
+
+      if (response instanceof Error) {
+        setNotify({
+          message: "Error adding item to cart",
+        });
+        return;
+      }
+
+      router.refresh();
+    });
   };
 
   return (
@@ -146,18 +222,33 @@ const ProductCard = ({ product }: { product: Product }) => {
                 </div>
               )}
             </div>
-            <div
-              className="text-xs py-1 px-2 mr-1 rounded bg-[#003459] text-white"
-              style={{ display: isHovered ? "block" : "none" }}
-            >
-              Add to Cart
-            </div>
+            {colorOptions && sizeOptions && !isPending && (
+              <div
+                className="text-xs py-1 w-20 text-center px-2 mr-1 cursor-pointer rounded bg-[#003459] text-white"
+                onClick={handleAddItem}
+                style={{ display: isHovered ? "block" : "none" }}
+              >
+                Add to Cart
+              </div>
+            )}
+            {isPending && (
+              <div
+                className="text-xs py-1 px-2 w-20 mr-1 rounded bg-[#003459] text-white"
+                style={{ display: isHovered ? "block" : "none" }}
+              >
+                <div className="m-auto animate-spin rounded-full h-4 w-4 border-t-2 border-white"></div>
+              </div>
+            )}
           </div>
         </div>
         <div className="flex mt-2 justify-between">
           <div className="text-[#202020] text-base">{product?.brand?.name}</div>
           <div className="text-[#003459] font-bold text-base">
-            {product?.prices?.price?.formatted}
+            {getSymbolFromCurrency(activeCurrency?.code || "")}{" "}
+            {(
+              product?.prices?.price?.value *
+              (activeCurrency?.exchangeRate || 1)
+            ).toFixed(2)}
           </div>
         </div>
         <div className="text-[#202020] mt-1 break-all text-sm font-bold h-[44px] overflow-hidden">

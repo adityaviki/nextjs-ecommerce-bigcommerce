@@ -5,7 +5,7 @@ const AboutUs = () => {
     <div className="flex gap-4 md:flex-row md:h-[560px] flex-col mt-12">
       <div className="md:flex-1 md:h-[560px] h-[296px]">
         <Image
-          src="/images/home/about-us.png"
+          src="/images/about-us.png"
           alt="..."
           width={632}
           height={560}

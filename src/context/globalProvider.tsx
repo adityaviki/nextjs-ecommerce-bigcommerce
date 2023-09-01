@@ -1,18 +1,24 @@
-"use client";
-import React, { createContext, useState, useEffect, ReactNode } from "react";
+"use server";
+import { getCurrencyDetails } from "@/lib/actions/shippingLocation";
+import GlobalProviderModal from "./globalProviderModal";
+import { cookies } from "next/headers";
 
-export const GlobalContext = createContext({
-  error: "",
-  setError: (error: string) => {},
-});
+const GlobalProvider = async ({ children }: { children: React.ReactNode }) => {
+  let shippingLocation = cookies().get("ShippingLocation")?.value;
 
-const GlobalProvider = ({ children }: { children: ReactNode }) => {
-  const [error, setError] = useState("");
+  if (!shippingLocation) {
+    shippingLocation = "IN";
+  }
+
+  const currency = await getCurrencyDetails(shippingLocation);
 
   return (
-    <GlobalContext.Provider value={{ error, setError }}>
+    <GlobalProviderModal
+      currency={currency}
+      shippingLocation={shippingLocation}
+    >
       {children}
-    </GlobalContext.Provider>
+    </GlobalProviderModal>
   );
 };
 

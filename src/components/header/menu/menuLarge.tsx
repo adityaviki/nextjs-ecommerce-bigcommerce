@@ -1,9 +1,9 @@
 "use client";
 
 import { MenuItems } from "@/lib/types";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Image from "next/image";
-import { useEffect, useRef } from "react";
+import { useRef } from "react";
 
 interface SectionVisibility {
   sale: boolean;
@@ -16,7 +16,6 @@ interface SectionVisibility {
 
 const MenuLarge = ({ menuItems }: { menuItems: MenuItems }) => {
   const containerRef = useRef<HTMLDivElement | null>(null);
-  const buttonRef = useRef<HTMLDivElement | null>(null);
   const [sectionVisibility, setSectionVisibility] = useState<SectionVisibility>(
     {
       sale: false,
@@ -100,6 +99,22 @@ const MenuLarge = ({ menuItems }: { menuItems: MenuItems }) => {
     );
   };
 
+  useEffect(() => {
+    const handleOutsideClick = (event: MouseEvent) => {
+      if (
+        containerRef.current &&
+        !containerRef.current.contains(event.target as Node)
+      ) {
+        closeAllSections();
+      }
+    };
+
+    document.addEventListener("pointerdown", handleOutsideClick);
+    return () => {
+      document.removeEventListener("pointerdown", handleOutsideClick);
+    };
+  }, []);
+
   return (
     <div ref={containerRef} className="relative hidden md:block">
       <div className="flex w-full md:px-4 lg:px-32 text-white items-center justify-between bg-[#202020] md:gap-2 lg:gap-4 h-[36px]">
@@ -152,7 +167,7 @@ const MenuLarge = ({ menuItems }: { menuItems: MenuItems }) => {
             <Image
               width={410}
               height={562}
-              src="/images/home/menu-item-2.png"
+              src="/images/menu/menu-item-2.png"
               alt="..."
               className="absolute h-full w-full object-cover"
             />
@@ -203,7 +218,7 @@ const MenuLarge = ({ menuItems }: { menuItems: MenuItems }) => {
             <Image
               width={410}
               height={562}
-              src="/images/home/menu-item-1.png"
+              src="/images/menu/menu-item-1.png"
               alt="..."
               className="absolute h-full w-full object-cover"
             />

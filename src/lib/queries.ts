@@ -1,4 +1,4 @@
-import { productFragment } from "./fragments";
+import { cartFragment, productFragment } from "./fragments";
 
 export const getHomePageBannersQuery = /* GraphQL */ `
   query getHomePageBanners {
@@ -12,89 +12,6 @@ export const getHomePageBannersQuery = /* GraphQL */ `
               }
             }
           }
-        }
-      }
-    }
-  }
-`;
-
-export const getCategoryPageBannersQuery = /* GraphQL */ `
-  query getCategoryPageBanners($entityId: Int!) {
-    site {
-      content {
-        banners {
-          categoryPage(categoryEntityId: $entityId) {
-            edges {
-              node {
-                content
-              }
-            }
-          }
-        }
-      }
-    }
-  }
-`;
-
-export const getBrandPageBannersQuery = /* GraphQL */ `
-  query getBrandPageBanners($entityId: Int!) {
-    site {
-      content {
-        banners {
-          brandPage(brandEntityId: $entityId) {
-            edges {
-              node {
-                content
-              }
-            }
-          }
-        }
-      }
-    }
-  }
-`;
-
-export const getSearchPageBannersQuery = /* GraphQL */ `
-  query getSearchPageBanners {
-    site {
-      content {
-        banners {
-          searchPage {
-            edges {
-              node {
-                content
-              }
-            }
-          }
-        }
-      }
-    }
-  }
-`;
-
-export const getCategoryQuery = /* GraphQL */ `
-  query getCategory {
-    site {
-      categoryTree {
-        entityId
-        name
-        image {
-          urlOriginal
-        }
-      }
-    }
-  }
-`;
-
-export const getSubcategoriesQuery = /* GraphQL */ `
-  query getSubcategories {
-    site {
-      categoryTree {
-        entityId
-        name
-        children {
-          entityId
-          name
         }
       }
     }
@@ -169,19 +86,7 @@ export const getSearchProductsQuery = /* GraphQL */ `
           products {
             edges {
               node {
-                entityId
-                name
-                brand {
-                  name
-                }
-                prices {
-                  price {
-                    formatted
-                  }
-                }
-                defaultImage {
-                  urlOriginal
-                }
+                ...product
               }
             }
           }
@@ -189,6 +94,7 @@ export const getSearchProductsQuery = /* GraphQL */ `
       }
     }
   }
+  ${productFragment}
 `;
 
 export const getPopularBrandsQuery = /* GraphQL */ `
@@ -303,35 +209,42 @@ export const getBlogsQuery = /* GraphQL */ `
 `;
 
 export const getCartItemsQuery = /* GraphQL */ `
-  query getCartItems($cartEntityId: String) {
+  query getCartItems($cartEntityId: String!) {
     site {
       cart(entityId: $cartEntityId) {
-        currencyCode
-        entityId
-        amount {
-          value
-        }
-        lineItems {
-          totalQuantity
-          physicalItems {
-            entityId
-            productEntityId
-            variantEntityId
+        ...cart
+      }
+    }
+  }
+  ${cartFragment}
+`;
+
+export const getCurrenciesQuery = /* GraphQL */ `
+  query getCurrencies {
+    site {
+      currencies {
+        edges {
+          node {
+            code
+            exchangeRate
             name
-            brand
-            imageUrl
-            quantity
-            originalPrice {
-              value
-            }
-            selectedOptions {
-              name
-              ... on CartSelectedMultipleChoiceOption {
-                value
-              }
+            isActive
+            isTransactional
+            display {
+              symbol
             }
           }
         }
+      }
+    }
+  }
+`;
+
+export const getStoreNameQuery = /* GraphQL */ `
+  query getStoreName {
+    site {
+      settings {
+        storeName
       }
     }
   }

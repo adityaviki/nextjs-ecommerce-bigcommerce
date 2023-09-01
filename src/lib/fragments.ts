@@ -17,6 +17,8 @@ export const productFragment = /* GraphQL */ `
     }
     prices {
       price {
+        currencyCode
+        value
         formatted
       }
     }
@@ -41,6 +43,7 @@ export const productFragment = /* GraphQL */ `
     variants(first: 35, isPurchasable: true) {
       edges {
         node {
+          isPurchasable
           entityId
           defaultImage {
             urlOriginal
@@ -65,6 +68,39 @@ export const productFragment = /* GraphQL */ `
                 }
               }
             }
+          }
+        }
+      }
+    }
+  }
+`;
+
+export const cartFragment = /* GraphQL */ `
+  fragment cart on Cart {
+    currencyCode
+    entityId
+    amount {
+      value
+    }
+    lineItems {
+      totalQuantity
+      physicalItems {
+        entityId
+        productEntityId
+        variantEntityId
+        name
+        brand
+        imageUrl
+        quantity
+        originalPrice {
+          value
+        }
+        selectedOptions {
+          ... on CartSelectedMultipleChoiceOption {
+            entityId
+            name
+            value
+            valueEntityId
           }
         }
       }

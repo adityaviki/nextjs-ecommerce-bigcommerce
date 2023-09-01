@@ -26,12 +26,7 @@ const Footer = async () => {
           <div className="hidden md:block">{dividerIcon}</div>
           <div>Cookies</div>
         </div>
-        <Image
-          height={30}
-          width={310}
-          alt="..."
-          src="/images/home/payments.png"
-        />
+        <Image height={30} width={310} alt="..." src="/images/payments.png" />
         <div className="flex flex-col gap-4 md:flex-row md:gap-20">
           <div>© Indie Apparel Ltd 2004 - 2021 | All rights reserved</div>
           <div className="underline">Ecommerce by Calashock</div>

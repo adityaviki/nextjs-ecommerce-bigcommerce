@@ -1,8 +1,6 @@
 "use client";
 
 import { FooterLinks } from "@/lib/types";
-import { plusIcon } from "../icons";
-import { getFooterLinks } from "@/lib/bigCommerce";
 import AccordionItem from "../accordionItem";
 import { ReactNode } from "react";
 
@@ -12,7 +10,7 @@ const Grid = ({ children }: { children: ReactNode }) => {
   );
 };
 
-const FooterLinks = async ({ links }: { links: FooterLinks }) => {
+const FooterLinks = ({ links }: { links: FooterLinks }) => {
   const ShopSection = () => {
     return (
       <Grid>
@@ -94,7 +92,7 @@ const FooterLinks = async ({ links }: { links: FooterLinks }) => {
           <HelpSection />
         </div>
         <div className="w-[200px]">
-          <div className="text-black font-bold">Follow Us</div>
+          <div className="text-black font-bold mb-4">Follow Us</div>
           <FollowUsSection />
         </div>
       </div>

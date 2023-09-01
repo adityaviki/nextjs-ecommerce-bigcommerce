@@ -4,17 +4,17 @@ import Image from "next/image";
 const PromotionalCarousel = () => {
   const dummyData = [
     {
-      image: "/images/home/carousel/slide-1.png",
+      image: "/images/carousel/slide-1.png",
       heading: "Hey EU!",
       text: "We cover all duty and taxes! No unxepected charges on delivery!",
     },
     {
-      image: "/images/home/carousel/slide-2.png",
+      image: "/images/carousel/slide-2.png",
       heading: "Elevate Your Style",
       text: "Step into a realm of elegance and trends.",
     },
     {
-      image: "/images/home/carousel/slide-3.png",
+      image: "/images/carousel/slide-3.png",
       heading: "Unleash Your Creativity",
       text: "Express yourself with our versatile and unique fashion pieces.",
     },

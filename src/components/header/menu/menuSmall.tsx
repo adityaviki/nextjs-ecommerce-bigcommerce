@@ -7,9 +7,9 @@ import {
   rightArrowSmallIcon,
   profileIcon,
   downArrowIcon,
-} from "../icons";
+} from "../../icons";
 import { useState } from "react";
-import AccordionItem from "../accordionItem";
+import AccordionItem from "../../accordionItem";
 import { MenuItems } from "@/lib/types";
 
 const MenuSmall = ({ menuItems }: { menuItems: MenuItems }) => {
@@ -216,7 +216,7 @@ const MenuSmall = ({ menuItems }: { menuItems: MenuItems }) => {
         )}
       </div>
       <div
-        className={`fixed overflow-auto bg-white w-full h-full left-0 top-[52px] ${
+        className={`fixed overflow-auto bg-white w-full h-full left-0 top-[84px] ${
           menuOpen ? "block" : "hidden"
         }`}
       >
@@ -250,13 +250,6 @@ const MenuSmall = ({ menuItems }: { menuItems: MenuItems }) => {
           <div className="flex items-center gap-5">
             <div>{profileIcon}</div>
             <div>Log in/Sign up</div>
-          </div>
-          <div className="flex mt-5 items-center gap-5">
-            <div className="whitespace-nowrap">Ship to</div>
-            <div className="flex p-2 w-[275px] items-center rounded bg-[#F8F8F9] justify-between">
-              <div>UK</div>
-              <div>{downArrowIcon}</div>
-            </div>
           </div>
           <div className="mt-[42px] gap-4 grid grid-cols-2">
             <div>Contact</div>

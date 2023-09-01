@@ -1,82 +1,150 @@
-export interface ErrorProps extends Error {
-  status?: number;
-}
-
-export type Connection<T> = {
-  edges: Array<Edge<T>>;
+export type notification = {
+  message: string;
+  cb?: () => void;
 };
 
-export type Edge<T> = {
-  node: T;
+export type UserPreference = {
+  countryCode: string;
+  currencyCode: string;
 };
 
-export type PageBanner = {
-  content: string;
+export type ShippingLocationProps = {
+  countryCode: string;
+  countryName: string;
+  currencyCode: string;
+  flag: string;
+  symbol: string;
 };
 
-export type Category = {
-  entityId: number;
+export type CartPhysicalItem = {
+  entityId: string;
+  productEntityId: number;
+  variantEntityId: number;
   name: string;
-  image: {
-    urlOriginal: string;
+  brand: string;
+  imageUrl: string;
+  quantity: number;
+  originalPrice: {
+    value: number;
+  };
+  selectedOptions: Array<{
+    entityId: number;
+    name: string;
+    value: string;
+    valueEntityId: number;
+  }>;
+};
+
+export type LineItem = {
+  totalQuantity: number;
+  physicalItems: CartPhysicalItem[];
+};
+
+export type BigCommerceCart = {
+  entityId: string;
+  currencyCode: string;
+  amount: {
+    value: number;
+  };
+  lineItems: LineItem;
+};
+
+export type CartItem = {
+  quantity: number;
+  productEntityId: number;
+  variantEntityId: number;
+  selectedOptions: {
+    multipleChoices: Array<{
+      optionEntityId: number;
+      optionValueEntityId: number;
+    }>;
   };
 };
 
-export type BigCommerceCategoryOperation = {
+export type BigCommerceStoreNameOperation = {
   data: {
     site: {
-      categoryTree: Category[];
+      settings: {
+        storeName: string;
+      };
     };
   };
 };
 
-export type Cart = {
-  entityId: string;
-  currencyCode: string;
-  amount: number;
-  totalQuantity: number;
-  physicalItems: Array<{
-    entityId: string;
-    productId: number;
-    variantId: number;
-    name: string;
-    quantity: number;
-    price: number;
-    imageUrl: string;
-    color: string;
-    size: string;
-  }>;
+export type BigCommerceCreateCartOperation = {
+  data: {
+    cart: {
+      createCart: {
+        cart: BigCommerceCart;
+      };
+    };
+  };
+  variables: {
+    lineItemInput: {
+      lineItems: CartItem[];
+    };
+  };
+};
+
+export type BigCommerceAddCartLineItemOperation = {
+  data: {
+    cart: {
+      createCart: {
+        cart: {
+          entityId: string;
+        };
+      };
+    };
+  };
+  variables: {
+    lineItemInput: {
+      cartEntityId: string;
+      data: {
+        lineItems: CartItem[];
+      };
+    };
+  };
+};
+
+export type BigCommerceDeleteCartLineItemOperation = {
+  data: {
+    cart: {
+      deleteCartLineItem: {
+        cart: BigCommerceCart;
+      };
+    };
+  };
+  variables: {
+    lineItemInput: {
+      cartEntityId: string;
+      lineItemEntityId: string;
+    };
+  };
+};
+
+export type BigCommerceUpdateCartLineItemOperation = {
+  data: {
+    cart: {
+      updateCartLineItem: {
+        cart: BigCommerceCart;
+      };
+    };
+  };
+  variables: {
+    lineItemInput: {
+      cartEntityId: string;
+      lineItemEntityId: string;
+      data: {
+        lineItem: CartItem;
+      };
+    };
+  };
 };
 
 export type BigCommerceCartItemsOperation = {
   data: {
     site: {
-      cart: {
-        currencyCode: string;
-        entityId: string;
-        amount: {
-          value: number;
-        };
-        lineItems: {
-          totalQuantity: number;
-          physicalItems: Array<{
-            entityId: string;
-            productEntityId: number;
-            variantEntityId: number;
-            name: string;
-            brand: string;
-            imageUrl: string;
-            quantity: number;
-            originalPrice: {
-              value: number;
-            };
-            selectedOptions: Array<{
-              name: string;
-              value: string;
-            }>;
-          }>;
-        };
-      };
+      cart: BigCommerceCart;
     };
   };
   variables: {
@@ -84,12 +152,27 @@ export type BigCommerceCartItemsOperation = {
   };
 };
 
-export type SearchProduct = {
-  entityId: number;
+export type Currency = {
+  code: string;
+  exchangeRate: number;
   name: string;
-  brand: string;
-  image: string;
-  price: string;
+  isActive: boolean;
+  isTransactional: boolean;
+  display: {
+    symbol: string;
+  };
+};
+
+export type BigCommerceCurrenciesOperation = {
+  data: {
+    site: {
+      currencies: {
+        edges: Array<{
+          node: Currency;
+        }>;
+      };
+    };
+  };
 };
 
 export type BigCommerceSearchProductsOperation = {
@@ -99,21 +182,7 @@ export type BigCommerceSearchProductsOperation = {
         searchProducts: {
           products: {
             edges: Array<{
-              node: {
-                entityId: number;
-                name: string;
-                brand: {
-                  name: string;
-                };
-                prices: {
-                  price: {
-                    formatted: string;
-                  };
-                };
-                defaultImage: {
-                  urlOriginal: string;
-                };
-              };
+              node: Product;
             }>;
           };
         };
@@ -127,31 +196,10 @@ export type BigCommerceSearchProductsOperation = {
   };
 };
 
-export type FormattedVariant = {
-  entityId: number;
-  defaultImage: string;
-  price: string;
-  color: {
-    entityId: number;
-    label: string;
-  };
-  size: {};
-};
-
-export type FormattedProduct = {
-  entityId: number;
-  name: string;
-  brand: string;
-  defaultImage: string;
-  alternateImage: string;
-  price: string;
-  variants: FormattedVariant[];
-};
-
 export type PopularBrands = {
   entityId: number;
   name: string;
-  products: FormattedProduct[];
+  products: Product[];
 };
 
 export type Product = {
@@ -172,6 +220,8 @@ export type Product = {
   };
   prices: {
     price: {
+      currencyCode: string;
+      value: number;
       formatted: string;
     };
   };
@@ -194,6 +244,7 @@ export type Product = {
   variants: {
     edges: Array<{
       node: {
+        isPurchasable: boolean;
         entityId: number;
         defaultImage: {
           urlOriginal: string;
@@ -236,14 +287,34 @@ export type BigCommerceNewProductsOperation = {
   };
 };
 
-export type ListOfEntityIds = {
-  entityId: number;
+export type BigComemrceHomePageBannerOperation = {
+  data: {
+    site: {
+      content: {
+        banners: {
+          homePage: {
+            edges: Array<{
+              node: {
+                content: string;
+              };
+            }>;
+          };
+        };
+      };
+    };
+  };
 };
 
 export type BigCommercePopularBrandsOperation = {
   data: {
     site: {
-      popularBrands: Connection<ListOfEntityIds>;
+      popularBrands: {
+        edges: Array<{
+          node: {
+            entityId: number;
+          };
+        }>;
+      };
     };
   };
 };
@@ -322,28 +393,6 @@ export type BigCommerceFooterLinksOperation = {
   };
 };
 
-export type SubCategories = {
-  name: string;
-  children: Array<{
-    name: string;
-  }>;
-};
-
-export type BigCommerceSubCategoriesOperation = {
-  data: {
-    site: {
-      categoryTree: Array<{
-        entityId: number;
-        name: string;
-        children: Array<{
-          entityId: number;
-          name: string;
-        }>;
-      }>;
-    };
-  };
-};
-
 export type MenuItems = {
   brands: Array<{
     entityId: number;
@@ -382,27 +431,6 @@ export type BigCommerceMenuItemsOperation = {
   };
 };
 
-export type BigCommerceGetBrandNameByCategoryIdOperation = {
-  data: {
-    site: {
-      category: {
-        products: {
-          edges: Array<{
-            node: {
-              brand: {
-                name: string;
-              };
-            };
-          }>;
-        };
-      };
-    };
-  };
-  variables: {
-    categoryId: number;
-  };
-};
-
 export type BigCommerceProductsByBrandIdsOperation = {
   data: {
     site: {
@@ -411,7 +439,13 @@ export type BigCommerceProductsByBrandIdsOperation = {
           node: {
             entityId: number;
             name: string;
-            products: Connection<ListOfEntityIds>;
+            products: {
+              edges: Array<{
+                node: {
+                  entityId: number;
+                };
+              }>;
+            };
           };
         }>;
       };
@@ -419,53 +453,5 @@ export type BigCommerceProductsByBrandIdsOperation = {
   };
   variables: {
     brandIds: number[];
-  };
-};
-
-export type BigCommerceHomePageBannersOperation = {
-  data: {
-    site: {
-      content: {
-        banners: {
-          homePage: Connection<PageBanner>;
-        };
-      };
-    };
-  };
-};
-
-export type BigCommerceSearchPageBannersOperation = {
-  data: {
-    site: {
-      content: {
-        banners: {
-          searchPage: Connection<PageBanner>;
-        };
-      };
-    };
-  };
-};
-
-export type BigCommerceCategoryPageBannersOperation = {
-  data: {
-    site: {
-      content: {
-        banners: {
-          categoryPage: Connection<PageBanner>;
-        };
-      };
-    };
-  };
-};
-
-export type BigCommerceBrandPageBannersOperation = {
-  data: {
-    site: {
-      content: {
-        banners: {
-          brandPage: Connection<PageBanner>;
-        };
-      };
-    };
   };
 };

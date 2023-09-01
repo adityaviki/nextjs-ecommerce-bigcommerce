@@ -3,7 +3,7 @@ import type { Metadata } from "next";
 import Header from "@/components/header";
 import GlobalProvider from "@/context/globalProvider";
 import { Red_Hat_Display } from "next/font/google";
-import ErrorMsg from "@/components/error";
+import Notify from "@/components/notify";
 
 const redHatDisplay = Red_Hat_Display({
   weight: ["400", "500", "700"],
@@ -25,11 +25,11 @@ export default async function RootLayout({
       <body className={`${redHatDisplay.className} bg-[#e5e5e5]`}>
         <div className="max-w-[1440px] text-base text-[#202020] bg-white m-auto">
           <GlobalProvider>
-            <ErrorMsg />
+            <Notify />
             <div className="fixed max-w-[1440px] top-0 left-auto border-b z-10 w-full bg-white">
               <Header />
             </div>
-            <div className="mt-[92px]  md:mt-[160px]">{children}</div>
+            <div className="mt-[124px]  md:mt-[192px]">{children}</div>
           </GlobalProvider>
         </div>
       </body>
